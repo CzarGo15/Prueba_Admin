@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta de Comidas Semanal</title>
+    <title>Generador de Menús</title>
     <!-- Se utiliza Tailwind CSS para un diseño moderno y adaptable -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,130 +22,116 @@
 <body class="bg-gradient-to-br from-gray-50 to-indigo-100 flex items-center justify-center min-h-screen p-4">
 
     <div id="app-container" class="w-full">
-        <!-- Vista de Consulta (Visible al inicio) -->
-        <div id="vista-consulta" class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 border border-gray-200">
+        <!-- Vista de Búsqueda de Empleado (Visible al inicio) -->
+        <div id="vista-busqueda" class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 border border-gray-200">
             <div class="text-center">
                 <img src="https://downloads.puertocoatzacoalcos.com.mx/imagenes/LOGOASPN.png" alt="Logo de ASIPONA" class="w-24 h-24 mx-auto mb-4">
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 uppercase tracking-wider">Menú Semanal</h1>
-                <p class="text-gray-500 mt-2">Ingresa tu número de empleado para ver tus comidas de esta semana.</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 uppercase tracking-wider">Generador de Menús</h1>
+                <p class="text-gray-500 mt-2">Ingresa un número de empleado para asignarle un menú.</p>
             </div>
             <div class="mt-8">
-                <input type="number" id="numeroEmpleado" placeholder="Número de empleado" class="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg">
-                <button onclick="buscarComidas()" class="mt-4 w-full flex items-center justify-center gap-x-2 bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105 uppercase tracking-wider">
+                <label for="numeroEmpleadoAdmin" class="block text-sm font-medium text-gray-700 uppercase tracking-wider">Número de Empleado</label>
+                <input type="number" id="numeroEmpleadoAdmin" placeholder="Número de Empleado" class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg">
+                <button onclick="buscarParaAsignar()" class="mt-4 w-full flex items-center justify-center gap-x-2 bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105 uppercase tracking-wider">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
-                    Consultar
+                    Buscar Empleado
                 </button>
             </div>
-            <div id="contenedor-respuesta" class="mt-6 min-h-[70px] flex items-center justify-center">
-                <div id="cargando" class="text-center hidden">
+             <div id="contenedor-respuesta-admin" class="mt-6 min-h-[70px] flex items-center justify-center">
+                <div id="cargando-admin" class="text-center hidden">
                     <svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </div>
-                <div id="resultado" class="hidden w-full"></div>
-            </div>
+                 <div id="resultado-admin" class="hidden w-full"></div>
+             </div>
         </div>
 
-        <!-- Vista de Carga -->
-        <div id="vista-cargando" class="hidden w-full max-w-2xl mx-auto text-center p-8">
-            <svg class="animate-spin h-12 w-12 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <p class="mt-4 text-gray-600 font-semibold text-lg">Consultando información...</p>
-        </div>
-
-        <!-- Vista de Resultados (Oculta al inicio) -->
-        <div id="vista-resultados" class="hidden w-full max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 animate-fade-in border border-gray-200"></div>
-        
         <!-- Vista para Agregar Menú (Oculta al inicio) -->
-        <div id="vista-agregar-menu" class="hidden w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 animate-fade-in flex flex-col max-h-[90vh] border border-gray-200"></div>
+        <div id="vista-agregar-menu" class="hidden w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 animate-fade-in border border-gray-200"></div>
     </div>
     
     <script>
         const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxxd0gwpyRqzXv5ioDUXIGkQECH9SYefquc_JL-xENt0lzkbzlnJ0veE9Raq1amOR4Z/exec';
 
-        const numeroInput = document.getElementById('numeroEmpleado');
-        const resultadoDiv = document.getElementById('resultado');
-        const cargandoDiv = document.getElementById('cargando');
-        const vistaConsulta = document.getElementById('vista-consulta');
-        const vistaResultados = document.getElementById('vista-resultados');
+        const numeroInputAdmin = document.getElementById('numeroEmpleadoAdmin');
+        const vistaBusqueda = document.getElementById('vista-busqueda');
         const vistaAgregarMenu = document.getElementById('vista-agregar-menu');
-        const vistaCargando = document.getElementById('vista-cargando');
+        const cargandoDiv = document.getElementById('cargando-admin');
+        const resultadoDiv = document.getElementById('resultado-admin');
         let numeroEmpleadoBuscado = '';
         let nombreEmpleadoBuscado = '';
-        let dataForError = null;
-        
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            const numeroUrl = params.get('numero');
-            if (numeroUrl) {
-                numeroInput.value = numeroUrl;
-                buscarComidas();
-            }
-        };
 
-        function mostrarError(mensaje, esAutorizado = false) {
-            cargandoDiv.classList.add('hidden');
-            resultadoDiv.classList.remove('hidden');
-            let botonAgregar = '';
-
-            if (esAutorizado && dataForError) {
-                 numeroEmpleadoBuscado = numeroInput.value.trim();
-                 nombreEmpleadoBuscado = dataForError.name;
-                 mensaje = `¡HOLA, ${capitalizarTexto(nombreEmpleadoBuscado)}!<br>No tienes un menú seleccionado, favor de seleccionar.`;
-                 botonAgregar = `<button onclick="mostrarFormularioAgregar()" class="mt-4 w-full bg-green-600 text-white font-bold py-2 px-3 rounded-md hover:bg-green-700 uppercase tracking-wider">Agregar Menú</button>`;
-            }
-            resultadoDiv.innerHTML = `<div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert"><p class="font-bold">AVISO</p><p>${mensaje}</p></div>${botonAgregar}`;
-        }
-        
         function capitalizarTexto(texto) {
             if (!texto || typeof texto !== 'string' || texto.trim() === '') return '';
             return texto.toLowerCase().split(' ').map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1)).join(' ');
         }
-
-        function nuevaConsulta() {
-            vistaResultados.classList.add('hidden');
-            vistaAgregarMenu.classList.add('hidden');
-            vistaConsulta.classList.remove('hidden');
-            numeroInput.value = '';
-            resultadoDiv.innerHTML = '';
-            resultadoDiv.classList.add('hidden');
-        }
         
-        function entregarComida(rowIndex, dia) {
-            const deliveryContainer = document.getElementById(`delivery-status-${rowIndex}-${dia}`);
-            if (!deliveryContainer) return;
-            deliveryContainer.innerHTML = `<button class="w-full bg-yellow-500 text-white font-bold py-1 px-2 text-xs rounded-full cursor-not-allowed flex items-center justify-center uppercase tracking-wider" disabled><svg class="animate-spin h-4 w-4 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Marcando...</button>`;
-            fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rowIndex, dia, action: 'entregarDia' }) })
-            .then(() => { deliveryContainer.innerHTML = `<div class="inline-flex items-center justify-center gap-x-1 w-full text-center px-2 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-semibold uppercase tracking-wider"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Entregado</div>`; })
-            .catch(error => { console.error('Error al entregar comida:', error); deliveryContainer.innerHTML = `<button onclick="entregarComida(${rowIndex}, '${dia}')" class="w-full bg-emerald-500 text-white font-bold py-1 px-2 text-xs rounded-full hover:bg-emerald-600 uppercase tracking-wider">Entregar</button><p class="text-red-500 text-xs text-center mt-1">Error.</p>`; });
-        }
-        
-        function generarTarjetaDia(dia, comida, estado, rowIndex) {
-            const comidaCapitalizada = capitalizarTexto(comida);
-            const diaParaFuncion = dia.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-            let contentHtml;
-            if (!comidaCapitalizada || comidaCapitalizada.toLowerCase() === 'ninguna') {
-                contentHtml = `<span class="text-gray-400 italic text-sm">Sin Asignar</span>`;
-            } else {
-                let statusHtml = (estado && estado.toLowerCase().trim() === 'entregado')
-                    ? `<div class="inline-flex items-center justify-center gap-x-1 w-full text-center px-2 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-semibold uppercase tracking-wider"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>Entregado</div>`
-                    : `<button onclick="entregarComida(${rowIndex}, '${diaParaFuncion}')" class="w-full bg-emerald-500 text-white font-bold py-1 px-2 text-xs rounded-full hover:bg-emerald-600 transition-all duration-200 shadow hover:shadow-md transform hover:-translate-y-0.5 uppercase tracking-wider">Entregar</button>`;
-                
-                contentHtml = `
-                    <p class="text-gray-800 text-center flex-grow">${comidaCapitalizada}</p>
-                    <div id="delivery-status-${rowIndex}-${diaParaFuncion}" class="mt-2">
-                        ${statusHtml}
-                    </div>
-                `;
+        function buscarParaAsignar() {
+            const numero = numeroInputAdmin.value.trim();
+            if (!numero) {
+                resultadoDiv.innerHTML = `<div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4"><p>Por favor, ingresa un número de empleado.</p></div>`;
+                resultadoDiv.classList.remove('hidden');
+                return;
             }
 
-            return `
-                <div class="border rounded-lg p-3 flex flex-col bg-gray-50 min-h-[100px]">
-                    <h5 class="font-bold text-center text-gray-500 uppercase tracking-wider text-sm mb-2">${dia}</h5>
-                    ${contentHtml}
-                </div>
-            `;
+            cargandoDiv.classList.remove('hidden');
+            resultadoDiv.classList.add('hidden');
+
+            fetch(`${URL_SCRIPT}?action=buscar&numero=${encodeURIComponent(numero)}`)
+                .then(response => { if (!response.ok) throw new Error('Error en la red.'); return response.json(); })
+                .then(data => {
+                    cargandoDiv.classList.add('hidden');
+                    resultadoDiv.classList.remove('hidden');
+
+                    if (data.error) {
+                        resultadoDiv.innerHTML = `<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4"><p>${data.error}</p></div>`;
+                    } else if (data.name && data.menus) {
+                        numeroEmpleadoBuscado = numero;
+                        nombreEmpleadoBuscado = data.name;
+
+                        if (data.menus.length > 0) {
+                            const menuCount = data.menus.length;
+                            let menusActualesHtml = `<div class="mt-4 border-t pt-4"><h4 class="font-bold text-gray-700 mb-2 uppercase tracking-wider">Menús Asignados (${menuCount}):</h4>`;
+                            
+                            data.menus.forEach((menu) => {
+                                const menuTitle = (menu.contador && parseInt(menu.contador) > 1) ? `MENÚ ADICIONAL PARA LLEVAR #${parseInt(menu.contador) - 1}` : 'MENÚ COMEDOR';
+                                const titleColor = (menu.contador && parseInt(menu.contador) > 1) ? 'text-orange-600' : 'text-gray-800';
+                                menusActualesHtml += `<div class="border rounded-lg p-3 mb-2 text-sm"><p class="font-semibold ${titleColor}">${menuTitle}</p><ul class="mt-1 text-gray-600">`;
+                                const dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes'];
+                                dias.forEach(dia => {
+                                    const comida = menu.comidas[dia] || 'Ninguna';
+                                    if(comida.toLowerCase() !== 'ninguna') {
+                                        menusActualesHtml += `<li><span class="font-medium">${capitalizarTexto(dia)}:</span> ${capitalizarTexto(comida)}</li>`;
+                                    }
+                                });
+                                menusActualesHtml += `</ul></div>`;
+                            });
+                            menusActualesHtml += '</div>';
+
+                            const confirmationHtml = `
+                                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4">
+                                    <p class="font-bold">¡ATENCIÓN!</p>
+                                    <p>El empleado ${capitalizarTexto(nombreEmpleadoBuscado)} ya tiene menús asignados.</p>
+                                </div>
+                                ${menusActualesHtml}
+                                <div class="mt-4 flex flex-col sm:flex-row gap-4">
+                                    <button onclick="mostrarFormularioAgregar()" class="w-full bg-green-600 text-white font-bold py-2 px-3 rounded-md hover:bg-green-700 uppercase tracking-wider">Sí, Agregar Adicional</button>
+                                    <button onclick="cancelarAgregar()" class="w-full bg-gray-500 text-white font-bold py-2 px-3 rounded-md hover:bg-gray-600 uppercase tracking-wider">Cancelar</button>
+                                </div>
+                            `;
+                            resultadoDiv.innerHTML = confirmationHtml;
+                        } else {
+                            mostrarFormularioAgregar();
+                        }
+                    }
+                })
+                .catch(error => {
+                    cargandoDiv.classList.add('hidden');
+                    resultadoDiv.classList.remove('hidden');
+                    resultadoDiv.innerHTML = `<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4"><p>Error de comunicación. Intenta de nuevo.</p></div>`;
+                    console.error("Error al buscar:", error);
+                });
         }
-
-
+        
         function selectMeal(selectedBtn, day) {
             const container = document.getElementById(`options-${day}`);
             const buttons = container.querySelectorAll('button');
@@ -162,8 +148,7 @@
         }
 
         async function mostrarFormularioAgregar() {
-            vistaConsulta.classList.add('hidden');
-            vistaResultados.classList.add('hidden');
+            vistaBusqueda.classList.add('hidden');
             vistaAgregarMenu.classList.remove('hidden');
             vistaAgregarMenu.innerHTML = `<div class="text-center"><svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><p class="mt-2 text-gray-500">Cargando menú de la semana...</p></div>`;
 
@@ -187,26 +172,59 @@
                 };
 
                 const formHtml = `
-                    <div class="flex-shrink-0"><div class="text-center mb-4"><img src="https://downloads.puertocoatzacoalcos.com.mx/imagenes/LOGOASPN.png" alt="Logo de ASIPONA" class="w-24 h-24 mx-auto"></div><div class="mb-6 text-center border-b border-gray-200 pb-4"><h3 class="text-2xl font-extrabold text-indigo-600 uppercase tracking-wider">${menuOptions.title || 'Asignar Menú'}</h3></div></div>
-                    <div class="flex-grow overflow-y-auto pr-2">
-                        <div class="mb-6 text-center"><label class="block text-lg font-bold text-indigo-700 mb-3 pb-2 border-b border-indigo-200 uppercase tracking-wider">Empleado</label><p class="mt-2 text-xl text-gray-800">${capitalizarTexto(nombreEmpleadoBuscado)}</p></div>
+                    <div><div class="mb-6 text-center border-b border-gray-200 pb-4"><h3 class="text-2xl font-extrabold text-indigo-600 uppercase tracking-wider">${menuOptions.title || 'Asignar Menú'}</h3></div></div>
+                    <div>
+                        <div class="mb-6 text-center">
+                            <label class="block text-lg font-bold text-indigo-700 mb-3 pb-2 border-b border-indigo-200 uppercase tracking-wider">Empleado</label>
+                            <p class="mt-2 text-2xl font-extrabold text-gray-800 uppercase tracking-wider">${nombreEmpleadoBuscado.toUpperCase()}</p>
+                        </div>
                         ${createMealOptions('LUNES', menuOptions.lunes)}
                         ${createMealOptions('MARTES', menuOptions.martes)}
                         ${createMealOptions('MIÉRCOLES', menuOptions.miercoles)}
                         ${createMealOptions('JUEVES', menuOptions.jueves)}
                         ${createMealOptions('VIERNES', menuOptions.viernes)}
                     </div>
-                    <div class="flex-shrink-0 mt-6"><div id="guardar-respuesta" class="mb-2"></div><button id="btn-guardar" onclick="guardarNuevoMenu()" class="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-md hover:bg-emerald-700 uppercase tracking-wider flex items-center justify-center gap-x-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" /></svg>Guardar Menú</button><button onclick="nuevaConsulta()" class="mt-2 w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 uppercase tracking-wider">Cancelar</button></div>`;
+                    <div id="form-actions-container" class="mt-6"><div id="guardar-respuesta" class="mb-2"></div><button id="btn-guardar" onclick="guardarNuevoMenu()" class="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-md hover:bg-emerald-700 uppercase tracking-wider flex items-center justify-center gap-x-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" /></svg>Guardar Menú</button><button onclick="cancelarAgregar()" class="mt-2 w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 uppercase tracking-wider">Cancelar</button></div>`;
                 vistaAgregarMenu.innerHTML = formHtml;
 
             } catch (error) {
-                vistaAgregarMenu.innerHTML = `<div class="text-red-500 text-center">${error.message}</div><button onclick="nuevaConsulta()" class="mt-4 w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-md">Regresar</button>`;
+                vistaAgregarMenu.innerHTML = `<div class="text-red-500 text-center">${error.message}</div><button onclick="cancelarAgregar()" class="mt-4 w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-md">Regresar</button>`;
             }
+        }
+
+        function agregarOtroMenu() {
+            const dias = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES'];
+            dias.forEach(dia => {
+                const container = document.getElementById(`options-${dia}`);
+                if (container) {
+                    const buttons = container.querySelectorAll('button');
+                    buttons.forEach(btn => {
+                        btn.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50');
+                        btn.classList.add('bg-gray-100');
+                        const check = btn.querySelector('.check-icon');
+                        if (check) check.classList.add('hidden');
+                    });
+                }
+            });
+
+            const actionsContainer = document.getElementById('form-actions-container');
+            actionsContainer.innerHTML = `<div id="guardar-respuesta" class="mb-2"></div><button id="btn-guardar" onclick="guardarNuevoMenu()" class="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-md hover:bg-emerald-700 uppercase tracking-wider flex items-center justify-center gap-x-2"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" /></svg>Guardar Menú</button><button onclick="cancelarAgregar()" class="mt-2 w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 uppercase tracking-wider">Cancelar</button>`;
+            
+            document.querySelector('#vista-agregar-menu').scrollTop = 0;
+        }
+        
+        function cancelarAgregar() {
+            vistaAgregarMenu.classList.add('hidden');
+            vistaBusqueda.classList.remove('hidden');
+            numeroInputAdmin.value = "";
+            resultadoDiv.innerHTML = "";
+            resultadoDiv.classList.add('hidden');
         }
 
         function guardarNuevoMenu() {
             const boton = document.getElementById('btn-guardar');
             const respuestaDiv = document.getElementById('guardar-respuesta');
+            const actionsContainer = document.getElementById('form-actions-container');
             respuestaDiv.innerHTML = '';
             
             const dias = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES'];
@@ -248,11 +266,15 @@
 
             fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(nuevoMenu) })
             .then(() => {
-                boton.classList.remove('bg-green-600');
-                boton.classList.add('bg-teal-500');
-                boton.innerHTML = `¡GUARDADO CON ÉXITO!`;
-                respuestaDiv.innerHTML = `<p class="text-green-600 text-center font-semibold">REGRESANDO...</p>`;
-                setTimeout(nuevaConsulta, 2000);
+                actionsContainer.innerHTML = `
+                    <div class="text-center p-4 bg-teal-100 text-teal-800 rounded-lg">
+                        <p class="font-bold uppercase">¡Menú Guardado!</p>
+                        <p>Se ha registrado un menú para ${capitalizarTexto(nombreEmpleadoBuscado)}.</p>
+                    </div>
+                    <div class="mt-4 flex flex-col sm:flex-row gap-4">
+                        <button onclick="agregarOtroMenu()" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-md hover:bg-green-700 uppercase tracking-wider">Agregar Otro Menú</button>
+                        <button onclick="cancelarAgregar()" class="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 uppercase tracking-wider">Finalizar</button>
+                    </div>`;
             })
             .catch(error => {
                 console.error('Error al guardar:', error);
@@ -262,85 +284,12 @@
             });
         }
 
-        function buscarComidas() {
-            const numero = numeroInput.value.trim();
-            if (!numero) {
-                mostrarError('Por favor, introduce un número de empleado.');
-                return;
+        numeroInputAdmin.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                buscarParaAsignar();
             }
-
-            vistaConsulta.classList.add('hidden');
-            vistaResultados.classList.add('hidden');
-            vistaResultados.innerHTML = '';
-            vistaCargando.classList.remove('hidden');
-
-            fetch(`${URL_SCRIPT}?action=buscar&numero=${encodeURIComponent(numero)}`)
-                .then(response => { if (!response.ok) throw new Error('Error en la red.'); return response.json(); })
-                .then(data => {
-                    vistaCargando.classList.add('hidden');
-                    dataForError = data;
-                    if (data.error) {
-                       vistaConsulta.classList.remove('hidden');
-                       mostrarError(data.error);
-                    } else if (data.name && data.menus) {
-                        const menus = data.menus;
-                        const nombreCapitalizado = capitalizarTexto(data.name);
-
-                        numeroEmpleadoBuscado = numero;
-                        nombreEmpleadoBuscado = data.name;
-
-                        if (menus.length === 0) {
-                            mostrarError("Empleado no tiene menú.", true);
-                            return;
-                        }
-
-                        const menusConComida = menus.filter(menu => menu.tieneComida);
-                        let allMenusHtml = '';
-                        
-                        let subtitle = `ENCONTRAMOS ${menusConComida.length} MENÚS ASIGNADOS PARA TI:`;
-                        if (menusConComida.length === 0) {
-                             allMenusHtml = `<div class="flex-grow flex items-center justify-center"><p class="text-gray-600 text-lg text-center p-4 bg-yellow-50 border border-yellow-200 rounded-lg">Esta semana el usuario no pidió comida.</p></div>`;
-                             subtitle = 'NO SE ENCONTRARON COMIDAS PARA ESTA SEMANA.';
-                        } else {
-                            menusConComida.forEach((menu) => {
-                                const menuTitle = (menu.contador && parseInt(menu.contador) > 1) ? `MENÚ ADICIONAL PARA LLEVAR #${parseInt(menu.contador) - 1}` : 'MENÚ COMEDOR';
-                                const titleColor = (menu.contador && parseInt(menu.contador) > 1) ? 'text-orange-600' : 'text-indigo-600';
-                                
-                                const diasHtml = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'].map(dia => {
-                                    const diaLower = dia.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                    const comidaDia = (menu.comidas && menu.comidas[diaLower]) ? menu.comidas[diaLower] : 'Ninguna';
-                                    const estadoDia = (menu.estados && menu.estados[diaLower]) ? menu.estados[diaLower] : '';
-                                    return generarTarjetaDia(dia, comidaDia, estadoDia, menu.rowIndex);
-                                }).join('');
-
-                                allMenusHtml += `<div class="border border-gray-200 rounded-xl p-6 mb-6 bg-white shadow-sm"><h4 class="text-xl font-bold ${titleColor} mb-4 uppercase tracking-wider">${menuTitle}</h4><div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">${diasHtml}</div></div>`;
-                            });
-                        }
-                        
-                        const resultsContent = `
-                            <div>
-                                <div class="text-center mb-4"><img src="https://downloads.puertocoatzacoalcos.com.mx/imagenes/LOGOASPN.png" alt="Logo de ASIPONA" class="w-24 h-24 mx-auto"></div>
-                                <div class="mb-6 text-center border-b border-gray-200 pb-4"><h3 class="text-2xl font-extrabold text-indigo-600 uppercase tracking-wider">¡HOLA, ${nombreCapitalizado}!</h3><p class="text-gray-600 mt-2 uppercase tracking-wider">${subtitle}</p></div>
-                            </div>
-                            <div>${allMenusHtml}</div>
-                            <div class="flex-shrink-0 flex flex-col sm:flex-row gap-4">
-                                <button onclick="nuevaConsulta()" class="mt-4 w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 transition-transform transform hover:scale-105 uppercase tracking-wider">Nueva Consulta</button>
-                                <button onclick="mostrarFormularioAgregar()" class="mt-4 w-full bg-green-600 text-white font-bold py-3 px-4 rounded-md hover:bg-green-700 transition-transform transform hover:scale-105 uppercase tracking-wider">Menú Adicional</button>
-                            </div>`;
-                        
-                        vistaResultados.innerHTML = resultsContent;
-                        vistaResultados.classList.remove('hidden');
-                    }
-                })
-                .catch(error => { 
-                    console.error('Error detallado en la solicitud:', error);
-                    vistaCargando.classList.add('hidden');
-                    vistaConsulta.classList.remove('hidden');
-                    mostrarError('Error de comunicación. Verifica tu conexión e intenta de nuevo.'); 
-                });
-        }
-
-        numeroInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') { event.preventDefault(); buscarComidas(); } });
+        });
     </script>
 
 </body>
