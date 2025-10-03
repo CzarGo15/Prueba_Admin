@@ -51,7 +51,7 @@
         </div>
 
         <!-- Vista de Resultados (Oculta al inicio) -->
-        <div id="vista-resultados" class="hidden w-full max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 animate-fade-in flex flex-col max-h-[90vh] border border-gray-200"></div>
+        <div id="vista-resultados" class="hidden w-full max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 animate-fade-in border border-gray-200"></div>
         
         <!-- Vista para Agregar Menú (Oculta al inicio) -->
         <div id="vista-agregar-menu" class="hidden w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-8 animate-fade-in flex flex-col max-h-[90vh] border border-gray-200"></div>
@@ -303,8 +303,8 @@
                              subtitle = 'NO SE ENCONTRARON COMIDAS PARA ESTA SEMANA.';
                         } else {
                             menusConComida.forEach((menu) => {
-                                const menuTitle = (menu.adicional && parseInt(menu.adicional) > 1) ? `MENÚ ADICIONAL PARA LLEVAR #${parseInt(menu.adicional) - 1}` : 'MENÚ COMEDOR';
-                                const titleColor = (menu.adicional && parseInt(menu.adicional) > 1) ? 'text-orange-600' : 'text-indigo-600';
+                                const menuTitle = (menu.contador && parseInt(menu.contador) > 1) ? `MENÚ ADICIONAL PARA LLEVAR #${parseInt(menu.contador) - 1}` : 'MENÚ COMEDOR';
+                                const titleColor = (menu.contador && parseInt(menu.contador) > 1) ? 'text-orange-600' : 'text-indigo-600';
                                 
                                 const diasHtml = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'].map(dia => {
                                     const diaLower = dia.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
